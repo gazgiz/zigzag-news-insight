@@ -1,0 +1,57 @@
+# !pip install beautifulsoup4
+
+# html 파일 읽어와서 문장별로 분리
+
+import re
+from bs4 import BeautifulSoup
+
+def read_html_file(file_path):
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            content = file.read()
+        return content
+    except FileNotFoundError:
+        print(f"Error: {file_path} 파일을 찾을 수 없습니다.")
+        return None
+    except Exception as e:
+        print(f"Error: 파일을 읽는 중에 오류가 발생했습니다: {e}")
+        return None
+
+def remove_html_tags(html_content):
+    # HTML 태그를 제거합니다.
+    soup = BeautifulSoup(html_content, 'html.parser')
+    return soup.get_text()
+
+def clean_text(text):
+    # 텍스트의 양 끝 공백 제거 및 내부 여러 공백을 단일 공백으로 변환
+    text = text.strip()
+    text = ' '.join(text.split())
+    return text
+
+def split_sentences(text):
+    # 숫자에 포함된 마침표는 무시하고 문장을 분리하는 정규 표현식
+    sentences = re.split(r'(?<!\d)\.(?!\d)\s*', text)
+    # 빈 문자열 제거 및 공백 정리
+    sentences = [clean_text(sentence) for sentence in sentences if sentence.strip()]
+    return sentences
+
+def read_and_process_html(file_path):
+    # HTML 파일 내용을 읽습니다.
+    html_content = read_html_file(file_path)
+    
+    if html_content:
+        # HTML 태그 제거
+        text_content = remove_html_tags(html_content)
+        # 문장을 분리
+        sentences = split_sentences(text_content)
+        return sentences
+    else:
+        return []
+
+# 사용 예제
+file_path = '2024051301680.html'
+sentences = read_and_process_html(file_path)
+
+if sentences:
+    for i, sentence in enumerate(sentences, start=1):
+        print(f"문장 {i}: {sentence}")
