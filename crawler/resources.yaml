@@ -1,0 +1,7 @@
+crawler:
+  - root_url: 'https://www.ibric.org/bric/trend/bio-news.do'
+    pagination: True
+    max_page_num: 10
+  - root_url: 'https://news.google.com/home?hl=ko&gl=KR&ceid=KR:ko'
+    pagination: False
+    max_page_num: 1
